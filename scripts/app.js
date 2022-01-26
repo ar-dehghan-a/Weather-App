@@ -24,9 +24,9 @@ const updateUI = data => {
 
     let timeSrc = null;
     if (weather.IsDayTime) {
-        timeSrc = './img/day.svg';
+        timeSrc = './img/day_image.svg';
     } else {
-        timeSrc = './img/night.svg';
+        timeSrc = './img/night_image.svg';
     }
     time.setAttribute('src', timeSrc);
 
