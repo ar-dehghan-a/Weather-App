@@ -3,6 +3,14 @@ const card = document.querySelector('.card');
 const details = document.querySelector('.details');
 const time = document.querySelector('img.time');
 const icon = document.querySelector('.icon img');
+const weather = new Weather();
+
+
+if (localStorage.getItem('city')) {
+    weather.updateCity(localStorage.getItem('city'))
+        .then(data => updateUI(data))
+        .catch(err => console.log(`We have error: ${err.message}`));
+}
 
 const updateUI = data => {
 
@@ -22,12 +30,8 @@ const updateUI = data => {
     const iconSrc = `./img/icons/${weather.WeatherIcon}.svg`;
     icon.setAttribute('src', iconSrc);
 
-    let timeSrc = null;
-    if (weather.IsDayTime) {
-        timeSrc = './img/day_image.svg';
-    } else {
-        timeSrc = './img/night_image.svg';
-    }
+    let timeSrc = (weather.IsDayTime) ? './img/day_image.svg' : './img/night_image.svg';
+
     time.setAttribute('src', timeSrc);
 
     // remove the d-none class
@@ -35,14 +39,6 @@ const updateUI = data => {
         card.classList.remove('d-none');
     }
 
-};
-
-const updateCity = async (city) => {
-
-    const cityDetails = await getCity(city);
-    const weather = await getWeather(cityDetails.Key);
-
-    return { cityDetails, weather };
 };
 
 cityForm.addEventListener('submit', e => {
@@ -54,17 +50,24 @@ cityForm.addEventListener('submit', e => {
     cityForm.reset();
 
     // update the ui with new city
-    updateCity(city)
+    weather.updateCity(city)
         .then(data => updateUI(data))
-        .catch(err => console.log(err));
+        .catch(err => errorBox(err.message));
 
     // set local storage
     localStorage.setItem('city', city);
 
 });
 
-if (localStorage.getItem('city')) {
-    updateCity(localStorage.getItem('city'))
-        .then(data => updateUI(data))
-        .catch(err => console.log(err));
-}
+// error box
+const box = document.createElement('div');
+box.classList.add('boxErr');
+document.body.appendChild(box);
+
+const errorBox = (err) => {
+    box.innerHTML = (err == 'Failed to fetch') ? `Message: No connection<br>Please turn on your VPN!` : `Message: Not found!<br>Please try again`;
+    box.classList.add('active');
+    setTimeout(() => {
+        box.classList.remove('active');
+    }, 8000);
+};

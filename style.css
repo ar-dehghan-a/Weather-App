@@ -23,3 +23,21 @@ body {
   width: 100px;
   margin-bottom: -50px;
 }
+
+.boxErr {
+  position: fixed;
+  top: 30px;
+  left: -100%;
+  width: 300px;
+  padding: 20px;
+  background-color: red;
+  color: #fff;
+  border-radius: 12px;
+  font-size: medium;
+  text-align: center;
+  transition: all 0.6s linear;
+}
+
+.boxErr.active {
+  left: 30px !important;
+}
